@@ -16,7 +16,7 @@ class GameScene: SKScene {
     //var playerPunching:[SKTexture] = []
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.white
-        player.position = CGPoint(x: frame.midX, y: frame.midY/2)
+        player.position = CGPoint(x: frame.midX, y: frame.midY/1.9)
         player.setScale(1.2)
         addChild(player)
         idleStick()
