@@ -14,11 +14,17 @@ class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         let scene = GameScene(size: view.bounds.size)
-        let skView = view as! SKView
+        scene.size = self.view.frame.size
+   
+        if let skView = view as? SKView{
         skView.ignoresSiblingOrder = true
         scene.scaleMode = .resizeFill
         skView.presentScene(scene)
+        //skView.showsPhysics = true
+        }
+        
     }
 
    /* override var shouldAutorotate: Bool {
