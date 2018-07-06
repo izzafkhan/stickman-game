@@ -25,33 +25,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         idleStick()
         animateIdleStick()
         
-        
-       /*let playerGrav = SKPhysicsBody(texture:player.texture!,
-                                       size: player.size)*/
+        //Initialize the physical properties of the player
         let playerGrav = SKPhysicsBody(rectangleOf: CGSize(width:
             player.size.width/7, height: player.size.height/2), center:CGPoint( x: 7, y:0))
         playerGrav.friction = 0
         playerGrav.affectedByGravity = false
         playerGrav.allowsRotation = false
         playerGrav.restitution = 0
-       
-        // playerGrav.applyImpulse(CGVector(dx: 2.0, dy: -2.0))
         player.physicsBody = playerGrav
         
         
         player.physicsBody?.usesPreciseCollisionDetection = true
-        
-        
-        /*player.physicsBody = SKPhysicsBody(rectangleOf: CGSize(width:
-         player.size.width,
-         height: player.size.height))*/
-       /* let border = SKPhysicsBody(edgeLoopFrom: self.frame)
-        border.isDynamic = false
-        border.restitution=0
-        border.friction=0
-        border.contact
-        self.physicsBody = border*/
-      let leftWall = SKSpriteNode(color: UIColor.clear, size: CGSize(width: 1, height: frame.height))
+
+        //Set up barriers that player can't pass
+        let leftWall = SKSpriteNode(color: UIColor.clear, size: CGSize(width: 1, height: frame.height))
         leftWall.position = CGPoint(x: 0, y: 0)
         leftWall.physicsBody = SKPhysicsBody( rectangleOf: leftWall.size)
         leftWall.physicsBody!.isDynamic = false
@@ -65,7 +52,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightWall.position = CGPoint(x: frame.maxX, y: 0)
         rightWall.physicsBody = SKPhysicsBody( rectangleOf: rightWall.size)
         rightWall.physicsBody!.isDynamic = false
-    rightWall.physicsBody?.usesPreciseCollisionDetection = true
+        rightWall.physicsBody?.usesPreciseCollisionDetection = true
         rightWall.physicsBody?.restitution=0
         rightWall.physicsBody?.affectedByGravity = false
         rightWall.physicsBody?.friction = 0
@@ -75,22 +62,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let yRange = SKRange(lowerLimit:0,upperLimit:size.height)
         player.constraints = [SKConstraint.positionX(xRange,y:yRange)]
  
+        
         joystick.position = CGPoint(x:frame.midX/3, y:frame.midY/3)
         addChild(joystick)
- 
-            joystick.trackingHandler = { [unowned self] data in
-            //self.player.position = CGPoint(x: self.player.position.x + (data.velocity.x * 0.15), y: self.player.position.y)
-            self.player.position = CGPoint(x: self.player.position.x + (data.velocity.x*0.15), y: self.player.position.y)
-            // Something...
-            // data contains angular && velocity (data.angular, data.velocity)
+        //Control what happens when joystick is used
+        joystick.trackingHandler = { [unowned self] data in
+        self.player.position = CGPoint(x: self.player.position.x + (data.velocity.x*0.15), y: self.player.position.y)
         }
      
+        //Set up bitmasks for each physics body
         player.physicsBody?.categoryBitMask = playerMask
-       rightWall.physicsBody?.categoryBitMask = rightWallMask
+        rightWall.physicsBody?.categoryBitMask = rightWallMask
         leftWall.physicsBody?.categoryBitMask = leftWallMask
         player.physicsBody?.contactTestBitMask=leftWallMask | rightWallMask
         player.physicsBody?.collisionBitMask = leftWallMask | rightWallMask
-       // border.categoryBitMask = borderMask
         physicsWorld.contactDelegate = self
         let maxSpeed : CGFloat = 1.0
         if((player.physicsBody?.velocity.dx)! >= maxSpeed){
@@ -99,16 +84,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             player.physicsBody?.velocity = CGVector(dx:0,dy:0)
             
         }
-        let maxWall : CGFloat = frame.maxX
-        print(maxWall)
-        //print(rightWall.position.x)
-        if(player.position.x >= maxWall){
-            print("INSIDE MAX")
-            player.physicsBody?.contactTestBitMask = leftWallMask        }
-        
-        
+    
     }
     func idleStick(){
+        //Set up stickman at idle position
         let idleAtlas = SKTextureAtlas(named: "IdleSize")
         var idleFrames: [SKTexture] = []
         let numImages = 6
@@ -116,7 +95,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let idleFrameName = "idle000\(i)"
             idleFrames.append(idleAtlas.textureNamed(idleFrameName))
         }
-        
         playerIdleFrames = idleFrames
         
         let firstFrameTexture = playerIdleFrames[0]
@@ -133,6 +111,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
    func didBegin(_ contact: SKPhysicsContact){
+        //Identify which object have come in contact
         var firstObj: SKPhysicsBody
         var secondObj: SKPhysicsBody
         
@@ -152,8 +131,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
              //print("RIGHT WALL")
             player.physicsBody?.velocity = CGVector(dx:((player.physicsBody?.velocity.dx)! * (-1)),dy:0)
         }
-            
-            //(player.physicsBody?.velocity.dx)! * (-1), dy:0)
+    
     }
 
     
