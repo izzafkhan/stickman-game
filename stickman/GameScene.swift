@@ -15,6 +15,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var enemyP = SKSpriteNode()
     var up: Bool = false
     var touched: Bool = true
+    var kickButton : IKButton = {
+        var button = IKButton(imageNamed: "KickButton", buttonAction: {
+            animateKick()
+        })
+        button.zPosition = 1
+        return button
+    }()
     let joystick = AnalogJoystick(diameter: 80, colors: (UIColor.gray,
                                                 UIColor.gray))
 
@@ -32,10 +39,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //let rightWallMask: UInt32 = 0x3
     let floorMask: UInt32 = 0x3
     //var playerPunching:[SKTexture] = []
+    
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.white
         idleStick()
         animateIdleStick()
+        //createButtons()
+        kickButton.position = CGPoint(x: frame.maxX - frame.maxX/5 , y: frame.midY/3)
+       // kickButton.setScale(0.38)
+        addChild(kickButton)
         
         
         //Initialize the physical properties of the player
@@ -79,7 +91,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.animateJump()
                 
             }
-            if(data.velocity.y < 0){
+            if(self.up == false && self.touched == true && data.velocity.x < 10){
+                //self.animateIdleStick()
+                //self.animateJump()
                // self.player.removeAllActions()
                 //self.player.texture = SKTexture(imageNamed: "fall")
             }
@@ -272,7 +286,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             secondObj = contact.bodyA
         }
         if (firstObj.contactTestBitMask == playerMask && secondObj.contactTestBitMask == enemyMask){
-            print("DONE")
+
             player.physicsBody?.velocity = CGVector(dx: 0,dy: 0)
             enemyP.removeAllActions()
             enemyP.removeFromParent()
@@ -295,9 +309,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     }
     
-    
     func setUpBarriers(){
-        floor = SKSpriteNode(color: UIColor.black, size: CGSize(width:frame.width*2
+        floor = SKSpriteNode(color: UIColor.white, size: CGSize(width:frame.width*2
             , height: 1))
         floor.position.y = player.position.y/2 + 4
         floor.physicsBody = SKPhysicsBody( rectangleOf: floor.size)
@@ -308,26 +321,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         floor.physicsBody!.collisionBitMask = playerMask
         floor.physicsBody!.categoryBitMask = floorMask
         addChild(floor)
-        /*//Set up barriers that player can't pass
-        leftWall = SKSpriteNode(color: UIColor.black, size: CGSize(width: 1, height: frame.height))
-        leftWall.position = CGPoint(x: 0, y: 0)
-        leftWall.physicsBody = SKPhysicsBody( rectangleOf: leftWall.size)
-        leftWall.physicsBody!.isDynamic = false
-        leftWall.physicsBody?.restitution=0
-        leftWall.physicsBody?.usesPreciseCollisionDetection = true
-        leftWall.physicsBody?.affectedByGravity = false
-        leftWall.physicsBody?.friction = 0
-        addChild(leftWall)
-        
-        rightWall = SKSpriteNode(color: UIColor.clear, size: CGSize(width: 1, height: frame.height))
-        rightWall.position = CGPoint(x: frame.maxX, y: 0)
-        rightWall.physicsBody = SKPhysicsBody( rectangleOf: rightWall.size)
-        rightWall.physicsBody!.isDynamic = false
-        rightWall.physicsBody?.usesPreciseCollisionDetection = true
-        rightWall.physicsBody?.restitution=0
-        rightWall.physicsBody?.affectedByGravity = false
-        rightWall.physicsBody?.friction = 0
-        addChild(rightWall)*/
         
         let xRange = SKRange(lowerLimit: leftWall.position.x + 15,upperLimit: frame.maxX - 30)
         let yRange = SKRange(lowerLimit: floor.position.y,upperLimit:size.height)
@@ -379,6 +372,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        // player.physicsBody?.collisionBitMask = enemyMask
         
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+      super.touchesBegan(touches, with: event)
+    }
+    
+    func createButtons(){
+        let kickButton = SKSpriteNode(imageNamed: "KickButton")
+        kickButton.position = CGPoint(x: frame.maxX - frame.maxX/5 , y: frame.midY/3)
+        kickButton.setScale(0.38)
+        kickButton.name = "kickButton"
+        addChild(kickButton)
+    }
+    
     
     
 
