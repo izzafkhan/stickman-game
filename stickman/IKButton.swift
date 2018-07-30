@@ -14,6 +14,7 @@ class IKButton: SKNode{
     private var cropNode: SKCropNode
     private var action: () -> Void
     var isEnabled = true
+    var kickPressed: Bool = false
     init(imageNamed: String, buttonAction: @escaping () -> Void){
         button = SKSpriteNode(imageNamed: imageNamed)
         
@@ -53,15 +54,17 @@ class IKButton: SKNode{
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if(isEnabled == true){
-           mask.alpha = 0.5
-           run(SKAction.scale(by: 1.05, duration: 0.05))
-           run(SKAction.scale(by: 0.95, duration: 0.05))
+            kickPressed = true
+            mask.alpha = 0.5
+            run(SKAction.scale(by: 1.05, duration: 0.05))
+            run(SKAction.scale(by: 0.95, duration: 0.05))
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if (isEnabled == true){
             for touch in touches{
+                kickPressed = true
                 let location: CGPoint = touch.location(in: self)
                 if (button.contains(location)){
                     mask.alpha = 0.5
@@ -75,9 +78,8 @@ class IKButton: SKNode{
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if(isEnabled == true){
             for touch in touches{
+                kickPressed = false
                 let location: CGPoint = touch.location(in: self)
-                let rect = CGRect(origin: button.position, size: CGSize(width: button.size.width, height: button.size.height))
-                print(location)
                 if button.contains(location){
                     disable()
                     action()
