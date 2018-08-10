@@ -63,8 +63,8 @@ class IKButton: SKNode{
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if (isEnabled == true){
+            kickPressed = true
             for touch in touches{
-                kickPressed = true
                 let location: CGPoint = touch.location(in: self)
                 if (button.contains(location)){
                     mask.alpha = 0.5

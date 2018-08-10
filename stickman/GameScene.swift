@@ -10,7 +10,9 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    
+    enum playerState: String{
+        case idle, jump, kickLeft, kickRight, runRight, runLeft
+    }
     var player = SKSpriteNode()
     var enemyP = SKSpriteNode()
     var up: Bool = false
@@ -36,6 +38,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var leftWall = SKSpriteNode()
     var rightWall = SKSpriteNode()
     var floor = SKSpriteNode()
+    var playerGrav = SKPhysicsBody()
     
     let playerMask : UInt32 = 0x1
     let enemyMask : UInt32 = 0x2
@@ -53,125 +56,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         kickButton.position = CGPoint(x: frame.maxX - frame.maxX/5 , y: frame.midY/3)
         addChild(kickButton)
         
-        
-        //Initialize the physical properties of the player
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
-        let playerGrav = SKPhysicsBody(rectangleOf: CGSize(width:
-            player.size.width/7, height: player.size.height/2), center:CGPoint( x: 7, y:8))
-        playerGrav.friction = 0
-        playerGrav.affectedByGravity = true
-        playerGrav.allowsRotation = false
-        playerGrav.restitution = 0
-        playerGrav.usesPreciseCollisionDetection = true
-        player.physicsBody = playerGrav
-        self.rightRun()
-        self.leftRun()
-        self.jump()
-        self.kickRight()
-        self.kickLeft()
-      
+        setUpPlayerGrav()
+        setUpPlayerAnim()
         setUpBarriers()
         
         joystick.position = CGPoint(x:frame.midX/3, y:frame.midY/3)
         addChild(joystick)
-        //Control what happens when joystick is used
-        let idleVel: CGFloat = 0.0000000000000000000
-        joystick.trackingHandler = { [unowned self] data in
-            let prev: CGFloat = self.player.position.x
-            let pos: CGPoint = CGPoint(x: self.player.position.x + (data.velocity.x*0.15), y: self.player.position.y)
-            if( data.velocity.y < 45 && data.velocity.y > 20 && self.up == false){
-                self.up = true
-                self.touched = false
-                self.removeAllActions()
-                self.physicsWorld.gravity = CGVector(dx: 0, dy: -5)
-                self.player.physicsBody!.applyImpulse(CGVector(dx:0, dy:100))
-                self.animateJump()
-                
-            }
-            if( pos.x == prev || data.velocity.x == idleVel){
-                self.player.position = CGPoint(x: prev, y: self.player.position.y)
-            }
-            else{
-                 self.player.position = pos
-            }
-            
-            if (self.kickButton.kickPressed == true){
-                let action = self.player.action(forKey: "runRight")
-                action?.speed = 0
-                self.animateRightKick()
-            }
-            else if let action = self.player.action(forKey: "kickedLeft"){
-                
-            }
-            if(prev < self.player.position.x && self.movRight == false && self.up == false && self.touched == true && self.kickButton.kickPressed == false ){
-                self.movLeft=false
-                self.movRight = true
-                self.kickedRight = false
-                self.kickedLeft = false
-                self.player.removeAllActions()
-                self.animateRightRun()
-            }
-            else if( prev > self.player.position.x && self.movLeft == false && self.up == false && self.touched == true && self.kickButton.kickPressed == false     && self.kickedRight == false){
-                self.movRight = false
-                self.movLeft = true
-                self.kickedRight = false
-                self.kickedLeft = false
-                self.player.removeAllActions()
-                self.animateLeftRun()
-            }
-            if(prev == self.player.position.x || (data.velocity.x * 0.15) == idleVel  && self.up == false && self.touched == true && self.kickButton.kickPressed == false && self.kickedRight == false && self.kickedLeft == false ){
-                self.movLeft = false
-                self.movRight = false
-                self.kickedRight = false
-                self.player.removeAllActions()
-                self.animateIdleStick()
-            }
-
-            if(prev < self.player.position.x && self.movRight == false && self.kickedRight == false && self.kickButton.kickPressed == true ){
-                self.kickedRight = false
-                self.kickedLeft = true
-                print("INSIDE")
-                self.player.removeAllActions()
-                self.animateRightKick()
-            }
-        }
-
-
-        joystick.beginHandler = { [unowned self] in
-           // print("begin handler")
-           // self.animateIdleStick()
-        }
+        evaluateJoyStick()
+        setUpPhysicsBodies()
         
-        joystick.stopHandler = { [unowned self] in
-            self.player.removeAllActions()
-            if(self.up == false){
-            //self.animateIdleStick()
-            }
-            else{
-            //self.animateJump()
-            }
-            //self.up = false
-            self.animateIdleStick()
-        }
-        //print("AFTER JOYSTICK")
-        //Set up bitmasks for each physics body
-        player.physicsBody?.categoryBitMask = playerMask
-        //rightWall.physicsBody?.categoryBitMask = rightWallMask
-        
-        //leftWall.physicsBody?.categoryBitMask = leftWallMask
-        enemyP.physicsBody?.categoryBitMask = enemyMask
-        player.physicsBody?.contactTestBitMask = enemyMask | floorMask
-        player.physicsBody?.collisionBitMask = floorMask
-        
-       
-        physicsWorld.contactDelegate = self
-         //self.player.physicsBody!.applyImpulse(CGVector(dx:0, dy:10))
-       /*run(SKAction.repeatForever(
-            SKAction.sequence([
-                SKAction.run(addEnemy),
-                SKAction.wait(forDuration: 1.0)
-                ])
-        ))*/
         //addEnemy()
      
         
@@ -192,6 +86,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.position = CGPoint(x: frame.midX, y: frame.midY/1.9)
         player.setScale(0.5)
         addChild(player)
+        
     }
     
     func rightRun(){
@@ -223,7 +118,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func kickLeft(){
         let kickAtlas = SKTextureAtlas(named: "KickLeft")
         var kickFrames: [SKTexture] = []
-        let  numImages = 9
+        let  numImages = 3
         for i in 1...numImages{
             let kickFrameName = "KickLeft000\(i)"
             kickFrames.append(kickAtlas.textureNamed(kickFrameName))
@@ -234,7 +129,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func kickRight(){
         let kickAtlas = SKTextureAtlas(named: "KickRight")
         var kickFrames: [SKTexture] = []
-        let  numImages = 1
+        let  numImages = 3
         for i in 1...numImages{
             let kickFrameName = "KickRight000\(i)"
             kickFrames.append(kickAtlas.textureNamed(kickFrameName))
@@ -256,24 +151,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func animateJump(){
         if(player.action(forKey: "jump") == nil){
-            player.run(SKAction.repeatForever(SKAction.animate(with: playerJumpFrames, timePerFrame: 0.1, resize:false, restore: false)), withKey: "jump")
+            player.run(SKAction.repeatForever(SKAction.animate(with: playerJumpFrames, timePerFrame: 0.3, resize:false, restore: false)), withKey: "jump")
         }
    
     }
     
     func animateLeftKick(){
         player.isPaused = false
-        if(player.action(forKey: "leftKick") == nil){
-            player.run(SKAction.repeatForever(
-            SKAction.animate(with: playerLeftKickFrames, timePerFrame: 0.1,resize:false,restore: false)), withKey: "leftKick")
+        if(player.action(forKey: "kickLeft") == nil){
+            player.run(SKAction.animate(with: playerLeftKickFrames, timePerFrame: 0.2,resize:false,restore: false), withKey: "kickLeft")
         }
     }
     
     func animateRightKick(){
         player.isPaused = false
-        if(player.action(forKey: "rightKick") == nil) {
+        if(player.action(forKey: "kickRight") == nil) {
             player.run(
-                SKAction.animate(with: playerRightKickFrames, timePerFrame: 0.1,resize:false,restore: false), withKey: "rightKick")
+                SKAction.animate(with: playerRightKickFrames, timePerFrame: 0.2,resize:false,restore: false), withKey: "kickRight")
         }
     }
     
@@ -281,7 +175,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.isPaused = false
        if(player.action(forKey: "runRight") == nil ){
             player.run(SKAction.repeatForever(
-            SKAction.animate(with: playerRightRunFrames, timePerFrame: 0.1,resize:false,restore: false)), withKey: "runRight")
+            SKAction.animate(with: playerRightRunFrames, timePerFrame: 0.15,resize:false,restore: false)), withKey: "runRight")
         }
     }
     
@@ -291,16 +185,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(player.action(forKey: "runLeft") == nil){
             player.run(SKAction.repeatForever(
             SKAction.animate(with: playerLeftRunFrames, timePerFrame:
-                0.1, resize:false, restore:false)), withKey:"runLeft")
+                0.15, resize:false, restore:false)), withKey:"runLeft")
         }
     }
     func animateIdleStick(){
         player.run(SKAction.repeatForever(
-            SKAction.animate(with: playerIdleFrames, timePerFrame: 0.1, resize:false, restore: true)), withKey: "idlePlayer")
-    }
-    
-    func animateKick(){
-        
+            SKAction.animate(with: playerIdleFrames, timePerFrame: 0.1, resize:false, restore: true)), withKey: "idle")
     }
     
    func didBegin(_ contact: SKPhysicsContact){
@@ -339,7 +229,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     
     }
-    
+    func setUpPhysicsBodies(){
+        //Set up bitmasks for each physics body
+        player.physicsBody?.categoryBitMask = playerMask
+        //rightWall.physicsBody?.categoryBitMask = rightWallMask
+        
+        //leftWall.physicsBody?.categoryBitMask = leftWallMask
+        enemyP.physicsBody?.categoryBitMask = enemyMask
+        player.physicsBody?.contactTestBitMask = enemyMask | floorMask
+        player.physicsBody?.collisionBitMask = floorMask
+        
+        
+        physicsWorld.contactDelegate = self
+    }
     func setUpBarriers(){
         floor = SKSpriteNode(color: UIColor.white, size: CGSize(width:frame.width*2
             , height: 1))
@@ -416,9 +318,120 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(kickButton)
     }
     
+    func setUpPlayerGrav(){
+         playerGrav = SKPhysicsBody(rectangleOf: CGSize(width:
+            player.size.width/7, height: player.size.height/2), center:CGPoint( x: 7, y:8))
+        playerGrav.friction = 0
+        playerGrav.affectedByGravity = true
+        playerGrav.allowsRotation = false
+        playerGrav.restitution = 0
+        playerGrav.usesPreciseCollisionDetection = true
+        player.physicsBody = playerGrav
+    }
     
-    
-    
-    
-    
+    func setUpPlayerAnim(){
+        self.rightRun()
+        self.leftRun()
+        self.jump()
+        self.kickRight()
+        self.kickLeft()
+    }
+   
+    func evaluateJoyStick(){
+        let idleVel: CGFloat = 0.0000000000000000000
+        joystick.trackingHandler = { [unowned self] data in
+            let prev: CGFloat = self.player.position.x
+            let pos: CGPoint = CGPoint(x: self.player.position.x + (data.velocity.x*0.15), y: self.player.position.y)
+            if( data.velocity.y < 45 && data.velocity.y > 20 && self.up == false){
+                self.up = true
+                self.touched = false
+                self.removeAllActions()
+                self.physicsWorld.gravity = CGVector(dx: 0, dy: -5)
+                self.player.physicsBody!.applyImpulse(CGVector(dx:0, dy:100))
+                self.animateJump()
+                
+            }
+            if( pos.x == prev || data.velocity.x == idleVel){
+                self.player.position = CGPoint(x: prev, y: self.player.position.y)
+            }
+            else{
+                self.player.position = pos
+            }
+            
+            var action: SKAction
+            if (self.kickButton.kickPressed == true){
+                if(self.movRight){
+                if( self.player.action(forKey: "runRight") != nil){
+                action = self.player.action(forKey: "runRight")!
+                action.speed = 0
+                self.animateRightKick()
+                    }
+                }
+                if(self.movLeft){
+                    if( self.player.action(forKey: "runLeft") != nil){
+                action = self.player.action(forKey: "runLeft")!
+                action.speed = 0
+                self.animateLeftKick()
+                        }
+                }
+            }
+            else{
+                if(self.movRight){
+                    if( self.player.action(forKey: "runRight") != nil){
+                    action = self.player.action(forKey: "runRight")!
+                    action.speed = 1
+                    }
+                }
+                if(self.movLeft){
+                    if( self.player.action(forKey: "runLeft") != nil){
+                    action = self.player.action(forKey: "runLeft")!
+                    action.speed = 1
+                    }
+                }
+            }
+           
+            if(prev < self.player.position.x && self.movRight == false && self.up == false && self.touched == true && self.kickButton.kickPressed == false ){
+                self.movLeft=false
+                self.movRight = true
+                self.kickedRight = false
+                self.kickedLeft = false
+                self.player.removeAllActions()
+                self.animateRightRun()
+            }
+            else if( prev > self.player.position.x && self.movLeft == false && self.up == false && self.touched == true && self.kickButton.kickPressed == false     && self.kickedRight == false){
+                self.movRight = false
+                self.movLeft = true
+                self.kickedRight = false
+                self.kickedLeft = false
+                self.player.removeAllActions()
+                self.animateLeftRun()
+            }
+            if(prev == self.player.position.x || (data.velocity.x * 0.15) == idleVel  && self.up == false && self.touched == true && self.kickButton.kickPressed == false && self.kickedRight == false && self.kickedLeft == false ){
+                self.movLeft = false
+                self.movRight = false
+                self.kickedRight = false
+                self.player.removeAllActions()
+                self.animateIdleStick()
+            }
+            
+        }
+        
+        
+        joystick.beginHandler = { [unowned self] in
+            // print("begin handler")
+            // self.animateIdleStick()
+        }
+        
+        joystick.stopHandler = { [unowned self] in
+            self.player.removeAllActions()
+            if(self.up == false){
+                //self.animateIdleStick()
+            }
+            else{
+                //self.animateJump()
+            }
+            //self.up = false
+            self.animateIdleStick()
+        }
+    }
 }
