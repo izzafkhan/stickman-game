@@ -19,9 +19,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var touched: Bool = true
     var kickButton : IKButton = {
         var button = IKButton(imageNamed: "KickButton", buttonAction: {
-        
         })
-        
+        button.kickPressed = true
         button.zPosition = 1
         return button
     }()
@@ -359,7 +358,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             var action: SKAction
-            if (self.kickButton.kickPressed == true){
+            if (self.kickButton.kickPressed == true  && self.kickButton.isEnabled == true){
                 if(self.movRight){
                 if( self.player.action(forKey: "runRight") != nil){
                 action = self.player.action(forKey: "runRight")!

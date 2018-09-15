@@ -53,8 +53,8 @@ class IKButton: SKNode{
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if(isEnabled == true){
-            kickPressed = true
+        if(isEnabled == true && kickPressed == false){
+            //kickPressed = true
             mask.alpha = 0.5
             run(SKAction.scale(by: 1.05, duration: 0.05))
             run(SKAction.scale(by: 0.95, duration: 0.05))
@@ -62,8 +62,8 @@ class IKButton: SKNode{
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if (isEnabled == true){
-            kickPressed = true
+        if (isEnabled == true  && kickPressed == false ){
+           // kickPressed = true
             for touch in touches{
                 let location: CGPoint = touch.location(in: self)
                 if (button.contains(location)){
@@ -78,7 +78,7 @@ class IKButton: SKNode{
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if(isEnabled == true){
             for touch in touches{
-                kickPressed = false
+                //kickPressed = false
                 let location: CGPoint = touch.location(in: self)
                 if button.contains(location){
                     disable()

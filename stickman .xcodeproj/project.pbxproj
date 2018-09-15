@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		895CA2BF210EDD950031525B /* IKButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895CA2BE210EDD950031525B /* IKButton.swift */; };
+		895CA2C9210EDDAE0031525B /* idle.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 895CA2C0210EDDAD0031525B /* idle.atlas */; };
+		895CA2CA210EDDAE0031525B /* Jump.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 895CA2C1210EDDAD0031525B /* Jump.atlas */; };
+		895CA2CB210EDDAE0031525B /* RunRight.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 895CA2C2210EDDAE0031525B /* RunRight.atlas */; };
+		895CA2CC210EDDAE0031525B /* RunLeft.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 895CA2C3210EDDAE0031525B /* RunLeft.atlas */; };
+		895CA2CD210EDDAE0031525B /* IdleSize.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 895CA2C4210EDDAE0031525B /* IdleSize.atlas */; };
+		895CA2CE210EDDAE0031525B /* KickLeft.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 895CA2C5210EDDAE0031525B /* KickLeft.atlas */; };
+		895CA2D0210EDDAE0031525B /* KickRight.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 895CA2C7210EDDAE0031525B /* KickRight.atlas */; };
+		895CA2D1210EDDAE0031525B /* RunRightNew.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 895CA2C8210EDDAE0031525B /* RunRightNew.atlas */; };
 		89E7AF2B20EC894F00B09CA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E7AF2A20EC894F00B09CA4 /* AppDelegate.swift */; };
 		89E7AF3120EC894F00B09CA4 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E7AF3020EC894F00B09CA4 /* GameScene.swift */; };
 		89E7AF3320EC894F00B09CA4 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E7AF3220EC894F00B09CA4 /* GameViewController.swift */; };
@@ -14,11 +23,19 @@
 		89E7AF3820EC896300B09CA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89E7AF3720EC896300B09CA4 /* Assets.xcassets */; };
 		89E7AF3B20EC896300B09CA4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89E7AF3920EC896300B09CA4 /* LaunchScreen.storyboard */; };
 		89E7AF4320ECBAF300B09CA4 /* AnalogJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E7AF4220ECBAF300B09CA4 /* AnalogJoystick.swift */; };
-		89E7AF4B20EEFB6500B09CA4 /* Player.sks in Resources */ = {isa = PBXBuildFile; fileRef = 89E7AF4A20EEFB6500B09CA4 /* Player.sks */; };
 		89E7AF4D20EF00D900B09CA4 /* IdleSize.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 89E7AF4C20EF00D800B09CA4 /* IdleSize.atlas */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		895CA2BE210EDD950031525B /* IKButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IKButton.swift; sourceTree = "<group>"; };
+		895CA2C0210EDDAD0031525B /* idle.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = idle.atlas; sourceTree = "<group>"; };
+		895CA2C1210EDDAD0031525B /* Jump.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Jump.atlas; sourceTree = "<group>"; };
+		895CA2C2210EDDAE0031525B /* RunRight.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = RunRight.atlas; sourceTree = "<group>"; };
+		895CA2C3210EDDAE0031525B /* RunLeft.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = RunLeft.atlas; sourceTree = "<group>"; };
+		895CA2C4210EDDAE0031525B /* IdleSize.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = IdleSize.atlas; sourceTree = "<group>"; };
+		895CA2C5210EDDAE0031525B /* KickLeft.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = KickLeft.atlas; sourceTree = "<group>"; };
+		895CA2C7210EDDAE0031525B /* KickRight.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = KickRight.atlas; sourceTree = "<group>"; };
+		895CA2C8210EDDAE0031525B /* RunRightNew.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = RunRightNew.atlas; sourceTree = "<group>"; };
 		89E7AF2720EC894F00B09CA4 /* stickman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = stickman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89E7AF2A20EC894F00B09CA4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		89E7AF3020EC894F00B09CA4 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -28,7 +45,6 @@
 		89E7AF3A20EC896300B09CA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89E7AF3C20EC896300B09CA4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89E7AF4220ECBAF300B09CA4 /* AnalogJoystick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalogJoystick.swift; sourceTree = "<group>"; };
-		89E7AF4A20EEFB6500B09CA4 /* Player.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Player.sks; sourceTree = "<group>"; };
 		89E7AF4C20EF00D800B09CA4 /* IdleSize.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = IdleSize.atlas; path = ../../../IdleSize.atlas; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,12 +82,20 @@
 				89E7AF4220ECBAF300B09CA4 /* AnalogJoystick.swift */,
 				89E7AF3020EC894F00B09CA4 /* GameScene.swift */,
 				89E7AF3220EC894F00B09CA4 /* GameViewController.swift */,
-				89E7AF3420EC894F00B09CA4 /* Main.storyboard */,
+				895CA2BE210EDD950031525B /* IKButton.swift */,
+				895CA2C0210EDDAD0031525B /* idle.atlas */,
+				895CA2C4210EDDAE0031525B /* IdleSize.atlas */,
+				895CA2C1210EDDAD0031525B /* Jump.atlas */,
+				895CA2C5210EDDAE0031525B /* KickLeft.atlas */,
+				895CA2C7210EDDAE0031525B /* KickRight.atlas */,
+				895CA2C3210EDDAE0031525B /* RunLeft.atlas */,
+				895CA2C2210EDDAE0031525B /* RunRight.atlas */,
+				895CA2C8210EDDAE0031525B /* RunRightNew.atlas */,
 				89E7AF4C20EF00D800B09CA4 /* IdleSize.atlas */,
 				89E7AF3720EC896300B09CA4 /* Assets.xcassets */,
+				89E7AF3420EC894F00B09CA4 /* Main.storyboard */,
 				89E7AF3920EC896300B09CA4 /* LaunchScreen.storyboard */,
 				89E7AF3C20EC896300B09CA4 /* Info.plist */,
-				89E7AF4A20EEFB6500B09CA4 /* Player.sks */,
 			);
 			path = stickman;
 			sourceTree = "<group>";
@@ -136,9 +160,16 @@
 			files = (
 				89E7AF3620EC894F00B09CA4 /* Main.storyboard in Resources */,
 				89E7AF4D20EF00D900B09CA4 /* IdleSize.atlas in Resources */,
+				895CA2CA210EDDAE0031525B /* Jump.atlas in Resources */,
+				895CA2CB210EDDAE0031525B /* RunRight.atlas in Resources */,
+				895CA2C9210EDDAE0031525B /* idle.atlas in Resources */,
+				895CA2D0210EDDAE0031525B /* KickRight.atlas in Resources */,
+				895CA2CD210EDDAE0031525B /* IdleSize.atlas in Resources */,
 				89E7AF3820EC896300B09CA4 /* Assets.xcassets in Resources */,
+				895CA2D1210EDDAE0031525B /* RunRightNew.atlas in Resources */,
 				89E7AF3B20EC896300B09CA4 /* LaunchScreen.storyboard in Resources */,
-				89E7AF4B20EEFB6500B09CA4 /* Player.sks in Resources */,
+				895CA2CE210EDDAE0031525B /* KickLeft.atlas in Resources */,
+				895CA2CC210EDDAE0031525B /* RunLeft.atlas in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +183,7 @@
 				89E7AF3120EC894F00B09CA4 /* GameScene.swift in Sources */,
 				89E7AF4320ECBAF300B09CA4 /* AnalogJoystick.swift in Sources */,
 				89E7AF3320EC894F00B09CA4 /* GameViewController.swift in Sources */,
+				895CA2BF210EDD950031525B /* IKButton.swift in Sources */,
 				89E7AF2B20EC894F00B09CA4 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
